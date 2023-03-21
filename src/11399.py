@@ -1,6 +1,6 @@
 # ATM
 # https://www.acmicpc.net/problem/11399
-# 
+# 그리디, 정렬
 
 # =======================================
 n = int(input())
