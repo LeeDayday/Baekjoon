@@ -1,6 +1,6 @@
 # 동전 0
 # https://www.acmicpc.net/problem/11047
-# 
+# 그리디
 
 # =======================================
 n, k = map(int, input().split())
@@ -13,7 +13,6 @@ for i in range(n):
 A.sort(reverse=True)
 
 while k != 0:
-    print(cnt, n, idx)
     if idx >= n:
         break
     cnt += k // A[idx]
