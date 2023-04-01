@@ -7,6 +7,7 @@ n, m = map(int, input().split())
 arr = []
 min_pack = 1000
 min_nonpack = 1000
+cnt1 = 0
 for i in range(m):
     arr.append(list(map(int, input().split()))) # 패키지(6개) 가격, 낱개 가격
     if min_pack > arr[i][0]:
@@ -16,7 +17,7 @@ for i in range(m):
 
 N = n
 if N // 6:
-    cnt1 = min_pack * (N // 6)
+    cnt1 += min_pack * (N // 6)
     N %= 6
 
 if min_pack < min_nonpack * N:
