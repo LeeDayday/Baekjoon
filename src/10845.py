@@ -16,7 +16,7 @@ for i in range(n):
 
     elif cmd[0] == 'pop':
         try:
-            queue.pop(0)
+            print(queue.pop(0))
         except:
             print(-1)
 
