@@ -54,7 +54,7 @@ for height in range(min_limit, max_limit+1):
                 bfs(i, j, height, visited)
                 cnt += 1
     result = max(result, cnt)
-print(result)
+    
 if result:
     print(result)
 # 배열의 모든 값이 같은 경우 (모두 안전하거나, 모두 잠기거나)
