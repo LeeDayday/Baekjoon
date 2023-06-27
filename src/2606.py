@@ -17,23 +17,16 @@ for i in range(m):
     graph[s-1][e-1] = 1
     graph[e-1][s-1] = 1
 
-def bfs(v):
-    cnt = 0
-    queue = deque()
-    queue.append(v)
+def dfs(v):
+    global cnt
     visited.append(v)
 
-    while queue:
-        v = queue.popleft()
-        cnt += 1
+    for i in range(n):
+        if graph[v][i]:
+            if i not in visited:
+                dfs(i)
+                cnt += 1
 
-        for i in range(n):
-            node = graph[v][i]
-            
-            if node:
-                if i not in visited:
-                    queue.append(i)
-                    visited.append(i)
-    return cnt
-
-print(bfs(0)-1)
+cnt = 0
+dfs(0)
+print(cnt)
