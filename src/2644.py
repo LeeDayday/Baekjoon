@@ -4,7 +4,7 @@
 
 # =======================================
 import sys
-sys.setrecursionlimit(10**6)
+from collections import deque
 
 n = int(sys.stdin.readline())
 a, b = map(int, sys.stdin.readline().split())
@@ -18,16 +18,18 @@ for _ in range(m):
     graph[x-1][y-1] = 1
     graph[y-1][x-1] = 1
 
-def dfs(v, cnt):
-    cnt += 1
-    visited[v] = cnt
-    for i in range(n):
-        if graph[v][i]:
-            if visited[i] == 0:
-                dfs(i, cnt)  
+def bfs(v):
+    queue = deque()
+    queue.append(v)
+    visited[v] = 1
+    
+    while queue:
+        v = queue.popleft()
+        for i in range(n):
+            if graph[v][i]:
+                if visited[i] == 0:
+                    queue.append(i)
+                    visited[i] = visited[v] + 1
 
-visited[a-1] = 1
-dfs(a-1, 0)
-
-
+bfs(a-1)
 print(visited[b-1]-1)
