@@ -18,10 +18,10 @@ def find_length(lines, n):
             line_y = max(line_y, lines[i][1])
         # 선이 겹치지 않는 경우, 기준 재설정
         else:
-            cnt += abs(line_y - line_x)
+            cnt += line_y - line_x
             line_x, line_y = lines[i][0], lines[i][1]
             
-    cnt += abs(line_y - line_x)
+    cnt += line_y - line_x
 
     return cnt
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     n = int(input())
     lines = []
     for _ in range(n):
-        lines.append(list(map(int, input().split())))
+        lines.append(tuple(map(int, input().split())))
 
     print(find_length(lines, n))
     
