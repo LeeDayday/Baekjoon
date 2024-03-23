@@ -12,19 +12,15 @@ def solution():
     for _ in range(t):
         k = int(input())
         n = int(input())
-        rooms = [[0 for _ in range(n+1)]for _ in range(k+1)] 
-        # 0층의 i호엔 i명이 산다
-        # 모든 층의 1호엔 1명이 산다
-        for i in range(n+1):
-            rooms[0][i] = i
-        for i in range(k+1):
-            rooms[i][1] = 1
-      
-        for i in range(1, k+1):
-            for j in range(1, n+1):
-                rooms[i][j] = rooms[i][j - 1] + rooms[i - 1][j]
+        # 이차원 리스트를 선언하지 않고, 1차원 리스트 값을 계속 업데이트 하는 방법
+        # 0층의 i호엔 i명이 산다 
+        rooms = [i for i in range(1, n + 1)] 
+        # 1층 1호부터 k층의 n호까지 값 갱신
+        for i in range(k):
+            for j in range(1, n):
+                rooms[j] += rooms[j-1]
 
-        print(rooms[-1][-1])
+        print(rooms[-1])
 
 
 if __name__ == '__main__':
