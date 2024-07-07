@@ -1,0 +1,21 @@
+# Coins
+# https://www.acmicpc.net/problem/3067
+# 다이나믹 프로그래밍, 배낭 문제
+
+# =======================================
+import sys
+input = sys.stdin.readline
+
+t = int(input())
+
+for _ in range(t):
+    n = int(input())
+    coins = list(map(int, input().split()))
+    m = int(input())
+
+    dp = [0] * (m+1)
+    dp[0] = 1
+    for coin in coins:
+        for i in range(coin, m+1):
+            dp[i] += dp[i-coin]
+    print(dp[m])
