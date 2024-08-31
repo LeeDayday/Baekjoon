@@ -7,24 +7,17 @@ import sys
 input = sys.stdin.readline
 
 def get_binary(n):
-    result = []
-    power_of_two = 2 ** 19
-    while power_of_two != 0:
-        if n >= power_of_two:
-            result.append(1)
-            n -= power_of_two
-        else:
-            result.append(0)
-        power_of_two //= 2
-    idx = 0
-    while result[idx] == 0:
-        idx += 1
-    return result[idx:]
-# 13 = 8 + 4 + 1 = 1101
+    binary_number = ''
+    while n != 0:
+        r = n % 2
+        binary_number = str(r) + binary_number
+        n //= 2
+    return binary_number
+
 for _ in range(int(input())):
     n = int(input())
     result = get_binary(n)
-    result = result[::-1]
-    for i in range(len(result)):
-        if result[i] == 1:
-            print(i, end=' ')
+    len_ = len(result)
+    for i in range(1, len_ + 1):
+        if result[len_ - i] == '1':
+            print(i - 1, end=' ')
