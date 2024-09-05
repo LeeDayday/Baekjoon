@@ -7,13 +7,10 @@ import sys
 input = sys.stdin.readline
 
 
-data = []
-num = 1
-while len(data) <= 1000:
-    for i in range(num):
-        data.append(num)
-    num += 1
+data = [0]
+for i in range(46):
+    for j in range(i):
+        data.append(i)
 
 a, b = map(int, input().split())
-print(sum(data[a-1:b]))
-
+print(sum(data[a:b+1]))
