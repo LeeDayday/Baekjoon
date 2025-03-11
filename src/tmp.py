@@ -28,16 +28,12 @@ def solution(n, k, words):
     alphabets = [1 << i for i in range(26) if not(base_bits & 1 << i)] # 기본 알파벳을 제외한 알파벳의 비트 값만 리스트에 추가
     answer = 0
     for comb in combinations(alphabets, k - 5): # 배울 수 있는 알파벳 조합
-        learnable_bits = sum(comb) | base_bits
-        print(learnable_bits)
+        learnable_bits = sum(comb) | base_bits # 사용 가능한 알파벳
         cnt = 0
         for bit in bits:
-            if bit & learnable_bits == bit:
+            if bit & learnable_bits == bit: # 단어가 사용가능한 알파벳으로 이루어진 경우
                 cnt += 1
         answer = max(answer, cnt)
-            
-        # learnable_bits = comb | 
-
 
     return answer
 
