@@ -1,42 +1,39 @@
-# 복습 - 가르침
-# https://www.acmicpc.net/problem/1062
+# 복습 - 멀티탭 스케줄링
+# https://www.acmicpc.net/problem/1700
 
-from itertools import combinations
+from collections import defaultdict, deque
 import sys
 input = sys.stdin.readline
 
-n, k = map(int, input().split())
-words = []
-for _ in range(n):
-    words.append(input().rstrip())
-    
-def word_to_bit(word):
-    bit = 0
-    for ch in word:
-        bit = bit | (1 << ord(ch) - ord('a'))
-    return bit
+n, k = map(int, input().split()) # n: 멀티탭 구멍 개수, k: 전기용품 사용 횟수
+data = list(map(int, input().split())) # 전기 용품 사용 순서
 
-def solution(n, k, words):
-    if k < 5:
-        return 0
-    elif k >= 26:
-        return n
-    
-    
-    bits = list(map(word_to_bit, words)) # 입력받은 모든 단어를 비트로 변환
-    base_bits = word_to_bit('antic') # 남극언어 기본 알파벳
-    alphabets = [1 << i for i in range(26) if not(base_bits & 1 << i)] # 기본 알파벳을 제외한 알파벳의 비트 값만 리스트에 추가
+def solution(n, k, data):
     answer = 0
-    for comb in combinations(alphabets, k - 5): # 배울 수 있는 알파벳 조합
-        learnable_bits = sum(comb) | base_bits # 사용 가능한 알파벳
-        cnt = 0
-        for bit in bits:
-            if bit & learnable_bits == bit: # 단어가 사용가능한 알파벳으로 이루어진 경우
-                cnt += 1
-        answer = max(answer, cnt)
+    using = set() # 사용 중인 멀티탭
+
+    for i, num in enumerate(data):
+        using.add(num)
+        # 플러그를 뽑아야 하는 경우
+        if len(using) > n: 
+            # 사용중인 플러그 중 가장 나중에 사용되거나, 사용되지 않는 플러그 제거
+            last_idx = 0
+            last_num = 0 # 제거할 플러그
+            for using_num in using:
+                try:
+                    idx = data[i:].index(using_num) # using_num이 이후에 사용될 경우의 idx
+                except:
+                    last_num = using_num # using_num은 이후에 다시 사용되지 않음
+                    break
+                if last_idx < idx:
+                    last_idx = idx
+                    last_num = using_num
+            
+            using.remove(last_num)
+            answer += 1
 
     return answer
 
-print(solution(n, k, words))
+print(solution(n, k, data))
 
 
