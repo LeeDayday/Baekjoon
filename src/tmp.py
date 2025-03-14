@@ -1,30 +1,39 @@
-# 복습 - 부분합
-# https://www.acmicpc.net/problem/1806
+# 복습 - 최소비용 구하기
+# https://www.acmicpc.net/problem/1916
 
+from collections import defaultdict
+from heapq import heappush, heappop
 import sys
 input = sys.stdin.readline
 
-n, s = map(int, input().split()) # n: 수열의 길이, s: 부분합 기준
-data = list(map(int, input().split())) # 수열
+n = int(input())
+m = int(input())
 
-def solution(n, s, data):
-    answer = float('inf')
-    start, end = 0, 0
-    cnt = data[start] # 누적합 (=sum(data[start:end]))
-    while end < n:
-        if cnt < s:
-            end += 1
-            if end < n:
-                cnt += data[end]
-        else:
-            answer = min(answer, end - start + 1)
-            cnt -= data[start]
-            start += 1
-    
-    if answer == float('inf'):
-        return 0
-    return answer
+data = defaultdict(list)
+for _ in range(m):
+    start, end, weight = map(int, input().split())
+    data[start].append((end, weight))
 
-print(solution(n, s, data))
+s, e = map(int, input().split())
+
+def solution(s, e):
+    distance = [float('inf')] * (n + 1) # 정점 s에서부터 다른 정점까지의 최소 거리 저장
+    distance[s] = 0
+    heap = []
+    heappush(heap, (distance[s], s)) # 힙에 (거리, 번호) 관리
+    while heap:
+        curr_dist, curr_num = heappop(heap)
+        if distance[curr_num] < curr_dist:
+            continue
+        for new_num, new_dist in data[curr_num]:
+            # s -> new_num vs s -> curr_num -> new_num
+            if distance[new_num] > distance[curr_num] + new_dist:
+                distance[new_num] = distance[curr_num] + new_dist
+                heappush(heap, (distance[new_num], new_num))
+
+
+    return distance[e]
+
+print(solution(s, e))
 
 
