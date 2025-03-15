@@ -1,39 +1,41 @@
-# 복습 - 최소비용 구하기
-# https://www.acmicpc.net/problem/1916
+# 복습 - 최소 스패닝 트리
+# https://www.acmicpc.net/problem/1197
 
-from collections import defaultdict
-from heapq import heappush, heappop
 import sys
 input = sys.stdin.readline
 
-n = int(input())
-m = int(input())
+v, e = map(int, input().split())
+data = []
+for _ in range(e):
+    data.append(list(map(int, input().split())))
 
-data = defaultdict(list)
-for _ in range(m):
-    start, end, weight = map(int, input().split())
-    data[start].append((end, weight))
+data.sort(key= lambda x: x[2])
 
-s, e = map(int, input().split())
-
-def solution(s, e):
-    distance = [float('inf')] * (n + 1) # 정점 s에서부터 다른 정점까지의 최소 거리 저장
-    distance[s] = 0
-    heap = []
-    heappush(heap, (distance[s], s)) # 힙에 (거리, 번호) 관리
-    while heap:
-        curr_dist, curr_num = heappop(heap)
-        if distance[curr_num] < curr_dist:
-            continue
-        for new_num, new_dist in data[curr_num]:
-            # s -> new_num vs s -> curr_num -> new_num
-            if distance[new_num] > distance[curr_num] + new_dist:
-                distance[new_num] = distance[curr_num] + new_dist
-                heappush(heap, (distance[new_num], new_num))
+def find_parent(parent, a):
+    if parent[a] != a:
+        parent[a] = find_parent(parent, parent[a])
+    return parent[a]
 
 
-    return distance[e]
+def union(parent, a, b):
+    a = find_parent(parent, a)
+    b = find_parent(parent, b)
+    if a > b:
+        parent[b] = a
+    else:
+        parent[a] = b
 
-print(solution(s, e))
+
+def solution():
+    answer = 0
+    parent = [i for i in range(v + 1)]
+    for s, e, weight in data:
+        if find_parent(parent, s) != find_parent(parent, e):
+            union(parent, s, e)
+            answer += weight
+
+    return answer
+
+print(solution())
 
 
