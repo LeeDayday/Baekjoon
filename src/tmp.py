@@ -1,5 +1,5 @@
-# 복습 - 동전 1
-# https://www.acmicpc.net/problem/2293
+# 복습 - 동전 2
+# https://www.acmicpc.net/problem/2294
 
 import sys
 input = sys.stdin.readline
@@ -10,14 +10,16 @@ for _ in range(n):
     data.append(int(input()))
 
 def solution():
-    dp = [0]* (k + 1)
-    dp[0] = 1
+    dp = [float('inf')] * (k + 1)
+    dp[0] = 0
     for i in range(n):
         coin = data[i]
-        for j in range(k + 1):
-            if j >= coin:
-                dp[j] += dp[j - coin]
+        for j in range(coin, k + 1):
+            dp[j] = min(dp[j - coin] + 1, dp[j])
         
+    
+    if dp[-1] == float('inf'):
+        return -1
     return dp[-1]
     
 print(solution())
