@@ -1,25 +1,48 @@
-# 복습 - 동전 2
-# https://www.acmicpc.net/problem/2294
+# 복습 - 단지번호붙이기
+# https://www.acmicpc.net/problem/2667
 
 import sys
+from collections import deque
 input = sys.stdin.readline
 
-n, k = map(int, input().split())
+dx = [1, -1, 0, 0]
+dy = [0, 0, 1, -1]
+
+n = int(input())
 data = []
+
 for _ in range(n):
-    data.append(int(input()))
+    data.append(list(input().rstrip()))
 
 def solution():
-    dp = [float('inf')] * (k + 1)
-    dp[0] = 0
+    answer = []
+    def bfs(data, x, y):
+        queue = deque()
+        queue.append((x, y))
+        data[x][y] = '0' # 방문 처리
+        result = 1 # 단지 수
+        while queue:
+            curr_x, curr_y = queue.popleft()
+            for i in range(4):
+                new_x = curr_x + dx[i]
+                new_y = curr_y + dy[i]
+                if 0 <= new_x < n and 0 <= new_y < n:
+                    if data[new_x][new_y] == '1':
+                        queue.append((new_x, new_y))
+                        data[new_x][new_y] = '0'
+                        result += 1
+
+        return result
+                        
     for i in range(n):
-        coin = data[i]
-        for j in range(coin, k + 1):
-            dp[j] = min(dp[j - coin] + 1, dp[j])
-        
+        for j in range(n):
+            if data[i][j] == '1':
+                answer.append(bfs(data, i, j))
     
-    if dp[-1] == float('inf'):
-        return -1
-    return dp[-1]
-    
-print(solution())
+    answer.sort()
+    return answer
+
+answer = solution()
+print(len(answer))
+for i in range(len(answer)):
+    print(answer[i])
