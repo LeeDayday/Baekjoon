@@ -1,50 +1,50 @@
-# 복습 - 전쟁 - 전투
-# https://www.acmicpc.net/problem/1303
+# 복습 - DFS와 BFS
+# https://www.acmicpc.net/problem/1260
 
 import sys
-from collections import deque
+from collections import deque, defaultdict
 input = sys.stdin.readline
 
 dx = [1, -1, 0, 0]
 dy = [0, 0, 1, -1]
 
-m, n = map(int, input().split())
-data = []
+n, m, v = map(int, input().split())
+data = defaultdict(list)
 
-for _ in range(n):
-    data.append(list(input().rstrip()))
+for _ in range(m):
+    a, b = map(int, input().split())
+    data[a].append(b)
+    data[b].append(a)
 
-def solution():
-    visited = [[False] * (m) for _ in range(n)]
-    answer = [0, 0]
-
-    def bfs(x, y, color):
-        queue = deque()
-        queue.append((x, y))
-        visited[x][y] = True
-        cnt = 1
-        while queue:
-            curr_x, curr_y = queue.popleft()
-            for i in range(4):
-                new_x = curr_x + dx[i]
-                new_y = curr_y + dy[i]
-                if 0 <= new_x < n and 0 <= new_y < m:
-                    if not visited[new_x][new_y]:
-                        if data[new_x][new_y] == color:
-                            visited[new_x][new_y] = True
-                            queue.append((new_x, new_y))
-                            cnt += 1
-        return cnt ** 2
-    
-    for i in range(n):
-        for j in range(m):
-            if not visited[i][j]:
-                if data[i][j] == 'B':
-                    answer[1] += bfs(i, j, data[i][j])
-                else:
-                    answer[0] += bfs(i, j, data[i][j])
-
+for key in data:
+    data[key].sort()
+def dfs():
+    visited = [False] * (n + 1)
+    stack = [v]
+    answer = []
+    while stack:
+        curr_node = stack.pop()
+        if not visited[curr_node]:
+            answer.append(curr_node)
+            visited[curr_node] = True
+            for new_node in reversed(data[curr_node]):
+                if not visited[new_node]:
+                    stack.append(new_node)
     return answer
 
-answer = solution()
-print(*answer)
+def bfs():
+    visited = [False] * (n + 1)
+    queue = deque([v])
+    answer = []
+    while queue:
+        curr_node = queue.popleft()
+        if not visited[curr_node]:
+            visited[curr_node] = True
+            answer.append(curr_node)
+            for new_node in data[curr_node]:
+                if not visited[new_node]:
+                    queue.append(new_node)
+    return answer
+
+print(*dfs())
+print(*bfs())
