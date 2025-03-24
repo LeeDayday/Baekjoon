@@ -1,5 +1,5 @@
-# 복습 - 단지번호붙이기
-# https://www.acmicpc.net/problem/2667
+# 복습 - 전쟁 - 전투
+# https://www.acmicpc.net/problem/1303
 
 import sys
 from collections import deque
@@ -8,41 +8,43 @@ input = sys.stdin.readline
 dx = [1, -1, 0, 0]
 dy = [0, 0, 1, -1]
 
-n = int(input())
+m, n = map(int, input().split())
 data = []
 
 for _ in range(n):
     data.append(list(input().rstrip()))
 
 def solution():
-    answer = []
-    def bfs(data, x, y):
+    visited = [[False] * (m) for _ in range(n)]
+    answer = [0, 0]
+
+    def bfs(x, y, color):
         queue = deque()
         queue.append((x, y))
-        data[x][y] = '0' # 방문 처리
-        result = 1 # 단지 수
+        visited[x][y] = True
+        cnt = 1
         while queue:
             curr_x, curr_y = queue.popleft()
             for i in range(4):
                 new_x = curr_x + dx[i]
                 new_y = curr_y + dy[i]
-                if 0 <= new_x < n and 0 <= new_y < n:
-                    if data[new_x][new_y] == '1':
-                        queue.append((new_x, new_y))
-                        data[new_x][new_y] = '0'
-                        result += 1
-
-        return result
-                        
-    for i in range(n):
-        for j in range(n):
-            if data[i][j] == '1':
-                answer.append(bfs(data, i, j))
+                if 0 <= new_x < n and 0 <= new_y < m:
+                    if not visited[new_x][new_y]:
+                        if data[new_x][new_y] == color:
+                            visited[new_x][new_y] = True
+                            queue.append((new_x, new_y))
+                            cnt += 1
+        return cnt ** 2
     
-    answer.sort()
+    for i in range(n):
+        for j in range(m):
+            if not visited[i][j]:
+                if data[i][j] == 'B':
+                    answer[1] += bfs(i, j, data[i][j])
+                else:
+                    answer[0] += bfs(i, j, data[i][j])
+
     return answer
 
 answer = solution()
-print(len(answer))
-for i in range(len(answer)):
-    print(answer[i])
+print(*answer)
