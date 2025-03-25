@@ -1,5 +1,5 @@
-# 복습 - DFS와 BFS
-# https://www.acmicpc.net/problem/1260
+# 복습 - 미로탐색
+# https://www.acmicpc.net/problem/2178
 
 import sys
 from collections import deque, defaultdict
@@ -8,43 +8,32 @@ input = sys.stdin.readline
 dx = [1, -1, 0, 0]
 dy = [0, 0, 1, -1]
 
-n, m, v = map(int, input().split())
-data = defaultdict(list)
+n, m = map(int, input().split())
+data = []
 
-for _ in range(m):
-    a, b = map(int, input().split())
-    data[a].append(b)
-    data[b].append(a)
+for _ in range(n):
+    data.append(list(map(int, input().rstrip())))
 
-for key in data:
-    data[key].sort()
-def dfs():
-    visited = [False] * (n + 1)
-    stack = [v]
-    answer = []
-    while stack:
-        curr_node = stack.pop()
-        if not visited[curr_node]:
-            answer.append(curr_node)
-            visited[curr_node] = True
-            for new_node in reversed(data[curr_node]):
-                if not visited[new_node]:
-                    stack.append(new_node)
-    return answer
-
+# 최단 거리 & 도착 보장 -> bfs
 def bfs():
-    visited = [False] * (n + 1)
-    queue = deque([v])
-    answer = []
-    while queue:
-        curr_node = queue.popleft()
-        if not visited[curr_node]:
-            visited[curr_node] = True
-            answer.append(curr_node)
-            for new_node in data[curr_node]:
-                if not visited[new_node]:
-                    queue.append(new_node)
-    return answer
+    visited = [[False] * (m) for _ in range(n)]
+    queue = deque([(0, 0)])
+    visited[0][0] = True
 
-print(*dfs())
-print(*bfs())
+    while queue:
+        curr_x, curr_y = queue.popleft()
+        if curr_x == n - 1 and curr_y == m - 1:
+            break
+        for i in range(4):
+            new_x = curr_x + dx[i]
+            new_y = curr_y + dy[i]
+            if 0 <= new_x < n and 0 <= new_y < m:
+                if not visited[new_x][new_y] and data[new_x][new_y] == 1:
+                    visited[new_x][new_y] = True
+                    queue.append((new_x, new_y))
+                    data[new_x][new_y] = data[curr_x][curr_y] + 1
+    
+    return data[-1][-1]
+    
+
+print(bfs())
