@@ -1,38 +1,25 @@
-# 복습 - 숨바꼭질 3
-# https://www.acmicpc.net/problem/13549
+# 복습 - 퇴사 2
+# https://www.acmicpc.net/problem/15486
+
+# O(N)
 
 import sys
-from collections import deque
 input = sys.stdin.readline
 
-n, k = map(int, input().split())
-time = [float('inf')] * 100001
-cnt = [0] * 100001
+n = int(input())
+data = []
 
-queue = deque([n])
-time[n] = 0
+for _ in range(n):
+    data.append(list(map(int, input().split())))
 
-while queue:
-    curr_pos = queue.popleft()
-    if curr_pos == k:
-        break
-    # 1초가 소요되는 이동
-    for next_pos in (curr_pos - 1, curr_pos + 1):
-        if 0 <= next_pos < 100001:
-            # 더 빠른 시간으로 방문하는 경우 (업데이트 필요)
-            if time[next_pos] > time[curr_pos] + 1:
-                time[next_pos] = time[curr_pos] + 1
-                queue.append(next_pos)
-    # 0초가 소요되는 이동
-    next_pos = curr_pos * 2
-    if 0 <= next_pos < 100001:
-        # 더 빠른 시간으로 방문하는 경우 (업데이트 필요)
-        if time[next_pos] > time[curr_pos]:
-            time[next_pos] = time[curr_pos]
-            queue.append(next_pos)
-            cnt[next_pos] = cnt[curr_pos]
-        # 동일한 시간으로 방문하는 경우 (cnt ++)
-        elif time[next_pos] == time[curr_pos]:
-            cnt[next_pos] += cnt[curr_pos]      
+dp = [0] * (n + 1) # (i - 1)일에 얻을 수 있는 최대 수익
 
-print(time[k])
+for i in range(n):
+    # 오늘 상담을 하는 경우
+    if i + data[i][0] <= n:
+        dp[i + data[i][0]] = max(dp[i + data[i][0]], dp[i] + data[i][1])
+
+    # 최대 수익 반영
+    dp[i + 1] = max(dp[i + 1], dp[i])    
+
+print(dp[-1])
