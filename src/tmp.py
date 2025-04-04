@@ -1,31 +1,19 @@
-# 복습 - 점프
-# https://www.acmicpc.net/problem/1890
+# 복습 - 1, 2, 3 더하기 4 성공
+# https://www.acmicpc.net/problem/15989
 
-# O(N^2)
-
-dx = [1, 0]
-dy = [0, 1]
+# O(N)
 
 import sys
 input = sys.stdin.readline
 
-n = int(input())
-data = []
+dp = [1] * (10001)
 
-for _ in range(n):
-    data.append(list(map(int, input().split())))
+for i in range(2, 10001):
+    dp[i] += dp[i - 2]
 
-dp = [[0] * n for _ in range(n)]
+for i in range(3, 10001):
+    dp[i] += dp[i - 3]
 
-dp[0][0] = 1
-for i in range(n):
-    for j in range(n):
-        if dp[i][j] != 0 and data[i][j] != 0:
-            for k in range(2):
-                new_i = i + data[i][j] * dx[k]
-                new_j = j + data[i][j] * dy[k]
-                if 0 <= new_i < n and 0 <= new_j < n:
-                    dp[new_i][new_j] += dp[i][j]
-
-
-print(dp[-1][-1])
+for _ in range(int(input().rstrip())):
+    n = int(input().rstrip())
+    print(dp[n])
