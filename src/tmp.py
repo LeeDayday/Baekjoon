@@ -1,7 +1,10 @@
-# 복습 - 퇴사 2
-# https://www.acmicpc.net/problem/15486
+# 복습 - 점프
+# https://www.acmicpc.net/problem/1890
 
-# O(N)
+# O(N^2)
+
+dx = [1, 0]
+dy = [0, 1]
 
 import sys
 input = sys.stdin.readline
@@ -12,14 +15,17 @@ data = []
 for _ in range(n):
     data.append(list(map(int, input().split())))
 
-dp = [0] * (n + 1) # (i - 1)일에 얻을 수 있는 최대 수익
+dp = [[0] * n for _ in range(n)]
 
+dp[0][0] = 1
 for i in range(n):
-    # 오늘 상담을 하는 경우
-    if i + data[i][0] <= n:
-        dp[i + data[i][0]] = max(dp[i + data[i][0]], dp[i] + data[i][1])
+    for j in range(n):
+        if dp[i][j] != 0 and data[i][j] != 0:
+            for k in range(2):
+                new_i = i + data[i][j] * dx[k]
+                new_j = j + data[i][j] * dy[k]
+                if 0 <= new_i < n and 0 <= new_j < n:
+                    dp[new_i][new_j] += dp[i][j]
 
-    # 최대 수익 반영
-    dp[i + 1] = max(dp[i + 1], dp[i])    
 
-print(dp[-1])
+print(dp[-1][-1])
