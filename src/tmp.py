@@ -1,34 +1,34 @@
-# 복습 - 기타리스트
-# https://www.acmicpc.net/problem/1495
+# 복습 - BOJ 거리
+# https://www.acmicpc.net/problem/12026
 
-# O(nm)
+# O(n^2)
 
 import sys
-from collections import deque
 input = sys.stdin.readline
 
-n, s, m = map(int, input().split())
-data = list(map(int, input().split()))
+n = int(input())
+data = input().rstrip()
 
-answer = -1
-queue = deque()
-queue.append((s, 0))
+dp = [float('inf')] * n
+dp[0] = 0
 
-visited = [[False] * (m + 1) for _ in range(n + 1)]
-visited[0][s] = True # 초기 값
+dx = ['B', 'O', 'J']
+def get_next_ch(curr_ch):
+    for i in range(3):
+        if dx[i] == curr_ch:
+            return dx[(i + 1) % 3]
 
-while queue:
-    curr_volume, curr_idx = queue.popleft()
-    if curr_idx == n:
-        continue
-    if curr_volume + data[curr_idx] <= m and not visited[curr_idx + 1][curr_volume + data[curr_idx]]:
-        queue.append((curr_volume + data[curr_idx], curr_idx + 1))
-        visited[curr_idx + 1][curr_volume + data[curr_idx]] = True
-    if curr_volume - data[curr_idx] >= 0 and not visited[curr_idx + 1][curr_volume - data[curr_idx]]:
-        queue.append((curr_volume - data[curr_idx], curr_idx + 1))
-        visited[curr_idx + 1][curr_volume - data[curr_idx]] = True
+def solution():
+    if data[0] != 'B':
+        return -1
+    for i in range(n):
+        new_ch = get_next_ch(data[i])
+        for j in range(i + 1, n):
+            if data[j] == new_ch:
+                dp[j] = min(dp[j], dp[i] + (j - i) * (j - i)) # (j - i)칸 만큼 jump
 
-for volume in range(m + 1):
-    if visited[-1][volume]:
-        answer = max(answer, volume)
-print(answer)
+    if dp[-1] == float('inf'):
+        return -1
+    return dp[-1]
+
+print(solution())
