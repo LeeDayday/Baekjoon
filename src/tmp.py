@@ -1,21 +1,25 @@
-# 복습 - 평범한 배낭
-# https://www.acmicpc.net/problem/12865
+# 복습 - 1학년
+# https://www.acmicpc.net/problem/5557
 
-# O(nk)
+# O(N)
 
 import sys
+from collections import deque
 input = sys.stdin.readline
 
-n, k  = map(int, input().split())
-data = []
-for _ in range(n):
-    data.append(list(map(int, input().split())))
+n = int(input())
+data = list(map(int, input().split()))
 
-dp = [0] * (k + 1)
+dp = [[0] * 21 for _ in range(n - 1)]
 
-for w, v in data:
-    for j in range(k, w - 1, -1):
-        dp[j] = max(dp[j], dp[j - w] + v)
+dp[0][data[0]] = 1
 
+for i in range(1, n - 1):
+    for j in range(21):
+        if dp[i - 1][j] != 0:
+            if 0 <= j - data[i] <= 20:
+                dp[i][j - data[i]] += dp[i - 1][j]
+            if 0 <= j + data[i] <= 20:
+                dp[i][j + data[i]] += dp[i - 1][j]
 
-print(dp[-1])
+print(dp[-1][data[-1]])
