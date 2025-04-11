@@ -1,25 +1,23 @@
-# 복습 - 1학년
-# https://www.acmicpc.net/problem/5557
+# 복습 - 괄호
+# https://www.acmicpc.net/problem/10422
 
-# O(N)
+# O(n^2)
 
 import sys
-from collections import deque
 input = sys.stdin.readline
 
-n = int(input())
-data = list(map(int, input().split()))
+dp = [0] * (5001)
+dp[0] = 1
+dp[2] = 1
 
-dp = [[0] * 21 for _ in range(n - 1)]
+for i in range(4, 5001, 2):
+    for j in range(0, i, 2):
+        dp[i] += dp[j] * dp[i - j - 2]
+        dp[i] %= 1000000007
 
-dp[0][data[0]] = 1
-
-for i in range(1, n - 1):
-    for j in range(21):
-        if dp[i - 1][j] != 0:
-            if 0 <= j - data[i] <= 20:
-                dp[i][j - data[i]] += dp[i - 1][j]
-            if 0 <= j + data[i] <= 20:
-                dp[i][j + data[i]] += dp[i - 1][j]
-
-print(dp[-1][data[-1]])
+for _ in range(int(input())):
+    l = int(input())
+    if l % 2:
+        print(0)
+    else:
+        print(dp[l])
