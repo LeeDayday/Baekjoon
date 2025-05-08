@@ -1,23 +1,29 @@
-# 복습 - 괄호
-# https://www.acmicpc.net/problem/10422
+# 복습 - 단어 공부
+# https://www.acmicpc.net/problem/1157
 
-# O(n^2)
+# O(N)
 
 import sys
+from collections import Counter
 input = sys.stdin.readline
 
-dp = [0] * (5001)
-dp[0] = 1
-dp[2] = 1
+data = input().rstrip()
 
-for i in range(4, 5001, 2):
-    for j in range(0, i, 2):
-        dp[i] += dp[j] * dp[i - j - 2]
-        dp[i] %= 1000000007
+counter = Counter(data.upper())
 
-for _ in range(int(input())):
-    l = int(input())
-    if l % 2:
-        print(0)
-    else:
-        print(dp[l])
+max_count = -1
+max_char = ''
+duplicate = False
+
+for char, cnt in counter.items():
+    if cnt > max_count:
+        max_count = cnt
+        max_char = char
+        duplicate = False
+    elif cnt == max_count:
+        duplicate = True
+
+if duplicate:
+    print("?")
+else:
+    print(max_char)
