@@ -1,26 +1,37 @@
-# 복습 - 숨바꼭질
-# https://www.acmicpc.net/problem/1697
+# 복습 - A와 B
+# https://www.acmicpc.net/problem/12904
 
-# O(V + E) => O(V + 3V) => O(V) (V 는 최대 100001)
+# O(N) (N: 문자열 t의 길이)
 
 import sys
 from collections import deque
 input = sys.stdin.readline
 
-n, k = map(int, input().split())
-queue = deque()
-visited = [False] * (100001)
+s = input().rstrip()
+t = deque(input().rstrip())
+reversed_flag = False
+answer = 0
 
-# 동생 위치 > 수빈 위치 도달 bfs
-queue.append((k, 0)) # 현재 위치, 시간
-visited[k] = True
+# t -> s
+# 문자열 맨 뒤 A 삭제
+# 문자열 맨 뒤 B 삭제 후 뒤집기
+while len(t) >= len(s):
+    if len(t) == len(s):
+        if not reversed_flag:
+            if ''.join(t) == s:
+                answer = 1
+                break
+        else:
+            if ''.join(reversed(t)) == s:
+                answer = 1
+                break    
+    if not reversed_flag:
+        tmp = t.pop()
+    else:
+        tmp = t.popleft()
 
-while queue:
-    curr_pos, curr_time = queue.popleft()
-    for next_pos in [curr_pos - 1, curr_pos + 1, curr_pos // 2 if curr_pos % 2 == 0 else -1]:
-        if next_pos == n:
-            print(curr_pos)
-            exit(0)
-        if 0 <= next_pos <= 100000 and not visited[next_pos]:
-            queue.append((next_pos, curr_time + 1))
-            visited[next_pos] = True
+    if tmp == 'B':
+        reversed_flag = not reversed_flag
+
+
+print(answer)
