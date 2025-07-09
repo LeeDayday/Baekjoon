@@ -10,18 +10,18 @@ n = int(input())
 
 data = [0] + [int(input()) for _ in range(n)]
 answer = []
-
+visited = [False] * (n + 1)
 def solution(node, visited, result):
     visited[node] = True
     if not visited[data[node]]:
-        solution(data[node], visited, result)
+        solution(data[node], visited, result + [data[node]])
     elif data[node] in result: # 사이클이 발생한 경우
         answer.extend(result[result.index(data[node]):]) # 사이클이 발생한 부분만 최종 결과에 추가
     
 answer = []
 for i in range(1, n + 1):
-    visited = [False] * (n + 1)
-    solution(i, visited, [i])
+    if not visited[i]:
+        solution(i, visited, [i])
 
 
 print(len(answer))
