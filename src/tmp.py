@@ -1,32 +1,65 @@
-# 복습 - 빗물
-# https://www.acmicpc.net/problem/14719
+# 복습 - 인구 이동
+# https://www.acmicpc.net/problem/16234
 
-# O(N)
+# 
+
 
 import sys
+from collections import deque
 input = sys.stdin.readline
 
-h, w = map(int, input().split())
+# n x n 크기의 땅
+# 국경선을 공유하는 두 나라의 인구 차이가 [l, r]이면, 국경선 open, 인구 이동 시작
+# 인구 이동 시, 각 칸의 이동 수는 (연합의 인구 수) / (연합 개수)
+# 국경선 close
+dx = [1, -1, 0, 0]
+dy = [0, 0, 1, -1]
 
-data = list(map(int, input().split()))
+n, l, r = map(int, input().split()) 
+
+def bfs(data, team, i, j, num):
+    queue = deque()
+    queue.append((i, j))
+
+    indexes = [(i, j)]
+    sum_ = data[i][j]
+    total = 1
+    team[i][j] = num
+    
+    while queue:
+        curr_x, curr_y = queue.popleft()
+        for i in range(4):
+            new_x = curr_x + dx[i]
+            new_y = curr_y + dy[i]
+            if new_x < 0 or new_x >= n or new_y < 0 or new_y >= n:
+                continue
+            if team[new_x][new_y] == -1 and l <= abs(data[curr_x][curr_y] - data[new_x][new_y]) <= r:
+                queue.append((new_x, new_y))
+                team[new_x][new_y] = num
+                indexes.append((new_x, new_y))
+                sum_ += data[new_x][new_y]
+                total += 1
+    
+    for i, j in indexes:
+        data[i][j] = sum_ // total
+
+data = []
+for i in range(n):
+    data.append(list(map(int, input().split())))
 
 answer = 0
-# 진행 방향에 대한 최대 높이 저장
-left_to_right = [0] * w
-right_to_left = [0] * w
 
-left_to_right[0] = data[0]
-for i in range(1, w):
-    left_to_right[i] = max(left_to_right[i - 1], data[i])
-right_to_left[-1] = data[-1]
-for i in range(w - 2, -1, -1):
-    right_to_left[i] = max(right_to_left[i + 1], data[i])
-
-# 빗물 양 계산
-for i in range(1, w - 1):
-    rain = min(left_to_right[i], right_to_left[i])
-    # 빗물이 반드시 고이는 경우
-    if  rain > data[i]:
-        answer += rain - data[i]
+while True:
+    team = [[-1] * n for _ in range(n)] # 연합 발생 여부 및 순서
+    num = 0
+    for i in range(n):
+        for j in range(n):
+            if team[i][j] == -1:
+                # 연합의 크기가 2칸 이상이어야 인구 이동으로 인정
+                bfs(data, team, i, j, num)
+                num += 1
+    if num == n * n: # 아무 인구 이동 발생 없이 모든 칸을 돈 경우, 더 이상 인구 이동을 할 수 없다는 뜻
+        break
+    answer += 1
 
 print(answer)
