@@ -1,24 +1,23 @@
-# 복습 - 문자열 폭발
-# https://www.acmicpc.net/problem/9935
+# 복습 - 올림픽
+# https://www.acmicpc.net/problem/8979
 
-# O(N x M) (N: data 길이, M: target 길이)
+# O(NlogN)
 
 import sys
 input = sys.stdin.readline
 
-data = input().rstrip()
-target = input().rstrip()
-m = len(target)
-answer = []
+n, k = map(int, input().split())
+data = []
 
-for ch in data:
-    answer.append(ch)
-    if len(answer) >= m:
-        if answer[-m:] == list(target):
-            for _ in range(m):
-                answer.pop()
+for _ in range(n):
+    data.append(list(map(int, input().split())))
 
-if len(answer):
-    print(''.join(answer))
-else:
-    print("FRULA")
+data.sort(key=lambda x: (-x[1], -x[2], -x[3]))
+
+rank = 1
+for i in range(n):
+    if i > 0 and data[i][1:] != data[i - 1][1:]:
+        rank = i + 1
+    if data[i][0] == k:
+        print(rank)
+        break
