@@ -1,23 +1,21 @@
-# 복습 - 올림픽
-# https://www.acmicpc.net/problem/8979
+# 복습 - 덩치
+# https://www.acmicpc.net/problem/7568
 
-# O(NlogN)
+# O(N^2)
 
 import sys
 input = sys.stdin.readline
 
-n, k = map(int, input().split())
+n = int(input())
 data = []
 
 for _ in range(n):
-    data.append(list(map(int, input().split())))
+    data.append(list(map(int ,input().split())))
 
-data.sort(key=lambda x: (-x[1], -x[2], -x[3]))
-
-rank = 1
 for i in range(n):
-    if i > 0 and data[i][1:] != data[i - 1][1:]:
-        rank = i + 1
-    if data[i][0] == k:
-        print(rank)
-        break
+    rank = 1
+    for j in range(n):
+        if i != j:
+            if data[i][0] < data[j][0] and data[i][1] < data[j][1]:
+                rank += 1
+    print(rank, end=' ')
