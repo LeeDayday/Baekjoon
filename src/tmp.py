@@ -1,46 +1,27 @@
-# 복습 - 비밀번호 발음하기
-# https://www.acmicpc.net/problem/4659
+# 복습 - 퇴사
+# https://www.acmicpc.net/problem/14501
 
 # O(N)
 
 import sys
 input = sys.stdin.readline
 
-vowels = {'a', 'e', 'i', 'o', 'u'}
+n = int(input())
+data = []
+for _ in range(n):
+    data.append(list(map(int, input().split())))
 
-def check_password(data):
-    flag_v = False
-    for i in range(len(data)):
-        if data[i] in vowels:
-            flag_v = True
-        if i > 0 and data[i] == data[i - 1]:
-            # 'ee' 'oo' 외 두 문자가 연속한 경우 false
-            if data[i] != 'e' and data[i] != 'o':
-                return False
-    # 모음이 없는 경우, false
-    if flag_v is False:
-        return False
-    
-    # 자음/모음이 3번 연속되는 경우 false
-    cnt = [0, 0] # 연속적인 (자음, 모음) 개수
-    if len(data) >= 3:
-        for i in range(len(data)):
-            if cnt[0] == 3 or cnt[1] == 3:
-                return False
-            if data[i] in vowels:
-                cnt[1] += 1
-                cnt[0] = 0
-            else:
-                cnt[0] += 1
-                cnt[1] = 0
-    if cnt[0] == 3 or cnt[1] == 3:
-        return False
-    return True
-while True:
-    data = input().rstrip()
-    if data == 'end':
-        break
-    if check_password(data):
-        print(f"<{data}> is acceptable.")
+dp = [0] * (n + 1) # dp[i]: i일부터 상담을 시작할 경우 얻을 수 있는 최대 이익 (bottom-up)
+max_value = 0
+
+for i in range(n - 1, -1, -1): # i: 현재 날짜를 0-based index로 나타낸 것
+    finished = (
+        data[i][0] + i # finished: i일에 상담을 시작했을 때, 상담이 끝나는 날짜 (1-based day)
+    )
+    if finished > n: # 상담이 퇴사일(n) 을 넘기면 수행 불가
+        dp[i] = max_value # [i]일의 작업을 수행할 수 없는 경우, 누적 최댓값으로 채우기
     else:
-        print(f"<{data}> is not acceptable.")
+        dp[i] = max(max_value, data[i][1] + dp[finished])
+        max_value = max(max_value, dp[i])
+
+print(dp[0])
