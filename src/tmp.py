@@ -1,61 +1,36 @@
-# 복습 - 뱀
-# https://www.acmicpc.net/problem/3190
+# 복습 - 치킨 배달
+# https://www.acmicpc.net/problem/15686
 
-# O(T)
+# O(cCm * h * m) (c: 총 치킨집 개수, m: 선택된 치킨집 개수, h: 가정집 개수)
 
 import sys
-from collections import deque
+from collections import defaultdict
+from itertools import combinations
 input = sys.stdin.readline
 
-# 동, 남, 서, 북 (시계 방향)
-dx = [0, 1, 0, -1]
-dy = [1, 0, -1, 0]
+# n x n 크기의 도시
+# 최대 m개의 치킨집만 운영
+n, m = map(int, input().split())
 
-n = int(input())
-graph = [[0] * n for _ in range(n)] # 0: 빈 칸, 1: 사과, 2: 뱀
-graph[0][0] = 2
+graph = [list(map(int, input().split())) for _ in range(n)]
 
-snakes = deque()
-snakes.append((0, 0)) # front: 뱀의 머리, rear: 뱀의 꼬리
-idx = 0 # 뱀의 머리 방향
+data_house = [] # 가정집 좌표 저장
+data_chicken = [] # 치킨집 좌표 저장
 
-for _ in range(int(input())):
-    x, y = map(int, input().split())
-    graph[x - 1][y - 1] = 1
+for i in range(n):
+    for j in range(n):
+        if graph[i][j] == 1:
+            data_house.append((i, j))
+        elif graph[i][j] == 2:
+            data_chicken.append((i, j))
 
-commands = deque() # 뱀의 방향 변환 정보
-for _ in range(int(input())):
-    commands.append(list(input().split())) # 시간, 회전 방향
+# comb: 운영할 치킨집의 좌표 tuple
+answer = float('inf')
+for comb in combinations(data_chicken, m):
+    distance = [float('inf')] * len(data_house) # 가정집 별 치킨 거리
+    for i, j in comb: # i, j: 치킨집 좌표
+        for x in range(len(data_house)):
+            distance[x] = min(distance[x], abs(data_house[x][0] - i) + abs(data_house[x][1] - j))
+    answer = min(answer, sum(distance))
 
-for time in range(1, 10001):
-    # 종료 조건: 벽 또는 자기 자신과 부딪히는 경우
-    #print(f"{time}초, {snakes}")
-    # 직진
-    new_x = snakes[-1][0] + dx[idx]
-    new_y = snakes[-1][1] + dy[idx]
-
-    # 종료 조건: 벽 또는 자기 자신과 부딪히는 경우
-    if new_x < 0 or new_y < 0 or new_x >= n or new_y >= n:
-        break
-    if graph[new_x][new_y] == 2:
-        break
-    # 머리를 다음 칸에 위치시키기
-    snakes.append((new_x, new_y))
-    # 사과가 없는 경우
-    if graph[new_x][new_y] == 0:
-        # 꼬리칸 비우기
-        tail_x, tail_y = snakes.popleft()
-        graph[tail_x][tail_y] = 0
-    # 머리 칸 방문 처리
-    graph[new_x][new_y] = 2
-
-    # 방향 변경
-    if commands and commands[0][0] == str(time):
-        #print(commands[0])
-        if commands[0][1] == 'L':
-            idx = (idx - 1) % 4
-        else:
-            idx = (idx + 1) % 4
-        commands.popleft()
-
-print(time)
+print(answer)
