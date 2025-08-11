@@ -1,7 +1,7 @@
 # 복습 - 문서 검색
 # https://www.acmicpc.net/problem/1543
 
-# O(n^2)
+# O(n)
 
 import sys
 input = sys.stdin.readline
@@ -11,18 +11,16 @@ target = input().rstrip()
 
 n = len(data)
 t = len(target)
+
+i = 0
 answer = 0
-for i in range(n):
-    j = i
-    cnt = 0
-    while j < n:
-        if j + t <= n:
-            if data[j:j + t] == target:
-                cnt += 1
-                j += t
-            else: j += 1
-        else:
-            break
-    answer = max(answer, cnt)
+while i < n:
+    if i + t <= n:
+        if data[i:i + t] == target:
+            answer += 1
+            i += t
+        else: i += 1
+    else:
+        break
 
 print(answer)
